@@ -123,7 +123,11 @@
     "webpack-dev-server": "3.0.0"
   },
   "scripts": {
-    "start": "cross-env NODE_PATH=./src node scripts/start.js",
+    "start": "npm start:sql && npm start:api && npm start:react",
+    "start:sql": "sudo /etc/init.d/mysql start",
+    "start:api": "sudo node ./server/api.js",
+    "start:react": "cross-env NODE_PATH=./src node scripts/start.js",
+    "env": "cross-env NODE_PATH=./src node scripts/start.js",
     "build": "cross-env NODE_PATH=./src node scripts/build.js",
     "test": "cross-env NODE_PATH=./src node scripts/test.js --env=jsdom",
     "predeploy": "npm run build",

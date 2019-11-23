@@ -41,9 +41,6 @@ import avatar2 from '../../../assets/utils/images/avatars/2.jpg';
 import avatar3 from '../../../assets/utils/images/avatars/3.jpg';
 import avatar4 from '../../../assets/utils/images/avatars/4.jpg';
 
-var Docker = require('dockerode');
-var apidocker = new Docker({socketPath: '/var/run/docker.sock'});
-
 const data = [
     {name: 'Page A', uv: 4000, pv: 2400, amt: 2400},
     {name: 'Page B', uv: 3000, pv: 1398, amt: 2210},
@@ -85,14 +82,13 @@ export default class AnalyticsDashboard1 extends Component {
 
     }
     
-    listContainers = () => {
-        apidocker.listContainers(function (err, containers) {
-          containers.forEach(function (containerInfo) {
-            console.log(containerInfo)
-          });
-        });
+    listcontainers() {
+        fetch('http://172.22.0.2:4000/listcontainers')
+            .then(results => {
+                console.log(results.json())
+            })
     }
-
+    
     toggle() {
         this.setState(prevState => ({
             dropdownOpen: !prevState.dropdownOpen
@@ -118,7 +114,7 @@ export default class AnalyticsDashboard1 extends Component {
                     transitionAppearTimeout={0}
                     transitionEnter={false}
                     transitionLeave={false}>
-                    {this.listContainers()}
+                    {this.listcontainers()}
                     <div>
                         <PageTitle
                             heading="Page d'accueil"

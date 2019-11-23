@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 var express = require('express'); 
-var hostname = 'localhost'; 
+var hostname = '172.22.0.2'; 
 var port = 4000; 
 
 var app = express(); 
@@ -140,7 +140,7 @@ myRouter.route('/listcontainers')
 // GET
 .get(function(req,res){ 
     sequelize.query("Select idContainer from users inner join groupeusers on users.id = groupeusers.idUser inner join groupecontainers on groupecontainers.idGroupe = groupeusers.idGroupe where login='bastien';").then(([results, metadata]) => {
-      res.json({data : results});
+      res.json(results);
     })
 	  
 })

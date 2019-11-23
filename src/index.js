@@ -1,38 +1,37 @@
-/*!
+import React from 'react';
+import ReactDOM from 'react-dom';
+// import registerServiceWorker from './registerServiceWorker';
+import { unregister } from './registerServiceWorker';
 
-=========================================================
-* Argon Dashboard React - v1.0.0
-=========================================================
+import { HashRouter } from 'react-router-dom';
+import './assets/base.css';
+import Main from './DemoPages/Main';
+import configureStore from './config/configureStore';
+import { Provider } from 'react-redux';
 
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
+const store = configureStore();
+const rootElement = document.getElementById('root');
 
-* Coded by Creative Tim
+const renderApp = Component => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <HashRouter>
+        <Component />
+      </HashRouter>
+    </Provider>,
+    rootElement
+  );
+};
 
-=========================================================
+renderApp(Main);
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+if (module.hot) {
+  module.hot.accept('./DemoPages/Main', () => {
+    const NextApp = require('./DemoPages/Main').default;
+    renderApp(NextApp);
+  });
+}
+unregister();
 
-*/
-import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+// registerServiceWorker();
 
-import "assets/vendor/nucleo/css/nucleo.css";
-import "assets/vendor/@fortawesome/fontawesome-free/css/all.min.css";
-import "assets/scss/argon-dashboard-react.scss";
-
-import AdminLayout from "layouts/Admin.jsx";
-import AuthLayout from "layouts/Auth.jsx";
-
-ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-      <Route path="/admin" render={props => <AdminLayout {...props} />} />
-      <Route path="/auth" render={props => <AuthLayout {...props} />} />
-      <Redirect from="/" to="/admin/index" />
-    </Switch>
-  </BrowserRouter>,
-  document.getElementById("root")
-);

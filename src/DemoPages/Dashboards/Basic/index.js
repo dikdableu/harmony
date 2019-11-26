@@ -83,10 +83,14 @@ export default class AnalyticsDashboard1 extends Component {
     }
     
     listcontainers() {
-        fetch('http://172.22.0.2:4000/listcontainers')
-            .then(results => {
-                console.log(results.json())
-            })
+        fetch('http://api.harmony.choisy.io/listcontainers', {
+            mode: 'no-cors',
+            method:'GET',
+            
+        })
+        .then(results => {
+            console.log(results.json())
+        })
     }
     
     toggle() {

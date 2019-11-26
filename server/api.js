@@ -1,4 +1,6 @@
 const Sequelize = require('sequelize');
+var Docker = require('dockerode');
+var docker = new Docker({socketPath: '/var/run/docker.sock'});
 var express = require('express'); 
 var hostname = '172.22.0.2'; 
 var port = 4000; 
@@ -139,10 +141,17 @@ myRouter.route('/listcontainers')
 // J'implémente les méthodes GET, PUT, UPDATE et DELETE
 // GET
 .get(function(req,res){ 
+    var resultat = [];
+    var container;
     sequelize.query("Select idContainer from users inner join groupeusers on users.id = groupeusers.idUser inner join groupecontainers on groupecontainers.idGroupe = groupeusers.idGroupe where login='bastien';").then(([results, metadata]) => {
-      res.json(results);
+      results.forEach(function(element, index){
+        resultat.push(element.idContainer)
+      })
+       docker.listContainers({"filters": {"id": resultat}}, function(err, containers) {
+          console.log(containers)
+          res.json(containers);
+        })
     })
-	  
 })
 //POST
 //.post(function(req,res){

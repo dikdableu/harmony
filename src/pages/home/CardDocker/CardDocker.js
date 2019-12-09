@@ -14,7 +14,6 @@ import Fab from '@material-ui/core/Fab';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
-import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles({
   card: {
@@ -25,9 +24,8 @@ const useStyles = makeStyles({
   },
 });
 
-export default function CardDocker(){
+export default function CardDocker(props){
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [open, setOpen] = React.useState(false);
   const classes = useStyles();
 
   const handleClick = event => {
@@ -36,8 +34,8 @@ export default function CardDocker(){
 
   const handleClose = event => {
     setAnchorEl(null);
-    console.log(anchorEl)
   };
+  
 
   return(
     <Card className={classes.card} elevation={8}>
@@ -45,11 +43,11 @@ export default function CardDocker(){
         <CardMedia
           className={classes.media}
           image="https://raw.githubusercontent.com/filebrowser/logo/master/banner.png"
-          title="filebrowser"
+          title={props.name[0].length > 20 ? props.name[0].replace('/','').slice(0,20) + "..." : props.name[0].replace('/','').slice(0,20)}
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
-            filebrowser
+            {props.name[0].length > 20 ? props.name[0].replace('/','').slice(0,20) + "..." : props.name[0].replace('/','').slice(0,20)}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
             Est un outils qui permet d'administrer ses fichiers dans le cloud
@@ -58,24 +56,24 @@ export default function CardDocker(){
       </CardActionArea>
       <CardActions>
         <Button size="small" color="primary">
-          Share
+          {props.name[0].length > 20 ? props.name[0].replace('/','').slice(0,20) + "..." : props.name[0].replace('/','').slice(0,20)}
         </Button>
         <Button size="small" color="primary">
-          Learn More
+          {props.address}
         </Button>
         <Fab size="small" variant="extended" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} style={{ marginLeft: "auto" }}>
           <MoreVertIcon/>
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={() => setAnchorEl(null)}
-            >
-              <MenuItem onClick={() => handleClose}>Ouvrir</MenuItem>
-              <MenuItem onClick={() => handleClose}>Modifier</MenuItem>
-              <MenuItem onClick={() => handleClose}>Supprimer</MenuItem>
-            </Menu>
         </Fab>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={handleClose}>Ouvrir</MenuItem>
+          <MenuItem onClick={handleClose}>Modifier</MenuItem>
+          <MenuItem onClick={handleClose}>Supprimer</MenuItem>
+        </Menu>
       </CardActions>
     </Card>
   )

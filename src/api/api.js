@@ -2,7 +2,6 @@ const Sequelize = require('sequelize');
 var Docker = require('dockerode');
 var docker = new Docker({socketPath: '/var/run/docker.sock'});
 var express = require('express');
-var hostname = '172.22.0.2';
 var port = 4000;
 
 var app = express();
@@ -157,6 +156,18 @@ myRouter.route('/listcontainers')
         })
     })
 })
+
+myRouter.route('/all')
+// J'implémente les méthodes GET, PUT, UPDATE et DELETE
+// GET
+.get(function(req,res){
+  var container;
+  docker.listContainers({"all": true}, function(err, containers) {
+    console.log(containers)
+    res.json(containers);
+  })
+})
+
 //POST
 //.post(function(req,res){
 //       res.json({message : "Ajoute une nouvelle piscine à la liste", methode : req.method});
@@ -174,6 +185,6 @@ myRouter.route('/listcontainers')
 app.use(myRouter);
 
 
-app.listen(port, hostname, function(){
-	console.log("Mon serveur fonctionne sur http://"+ hostname +":"+port+"\n");
+app.listen(port, function(){
+	console.log("Mon serveur fonctionne sur http://localhost:"+port+"\n");
 });

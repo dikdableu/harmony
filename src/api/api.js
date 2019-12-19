@@ -63,7 +63,13 @@ const Container = sequelize.define('container', {
   nom: {
     type: Sequelize.STRING,
     allowNull: false
-  }
+  },
+  image: {
+		type: Sequelize.BLOB('long')
+	},
+	adresse: {
+    type: Sequelize.STRING(2000)
+  },
 }, {
   // options
 });
@@ -128,7 +134,9 @@ sequelize
   .authenticate()
   .then(() => {
     console.log('Connection has been established successfully.');
-
+    /*sequelize.sync({
+      force: true,
+    }) */
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err);
@@ -146,14 +154,9 @@ myRouter.route('/listcontainers')
 .get(function(req,res){
     var resultat = [];
     var container;
-    sequelize.query("Select idContainer from users inner join groupeusers on users.id = groupeusers.idUser inner join groupecontainers on groupecontainers.idGroupe = groupeusers.idGroupe where login='bastien';").then(([results, metadata]) => {
-      results.forEach(function(element, index){
-        resultat.push(element.idContainer)
-      })
-       docker.listContainers({"filters": {"id": resultat}}, function(err, containers) {
-          console.log(containers)
-          res.json(containers);
-        })
+    sequelize.query("Select c.id,c.nom,c.image,c.adresse from users u inner join groupeusers on u.id = groupeusers.idUser inner join groupecontainers on groupecontainers.idGroupe = groupeusers.idGroupe inner join containers c on c.id = groupecontainers.idContainer where login='bastien';").then(([results, metadata]) => {
+      console.log(results)
+      res.json(results)
     })
 })
 
@@ -167,6 +170,17 @@ myRouter.route('/all')
     res.json(containers);
   })
 })
+
+myRouter.route('/addForm')
+// J'implémente les méthodes GET, PUT, UPDATE et DELETE
+// GET
+.get(function(req,res){
+  var data = {}
+  sequelize.query("Select idContainer from users inner join groupeusers on users.id = groupeusers.idUser inner join groupecontainers on groupecontainers.idGroupe = groupeusers.idGroupe where login='bastien';").then(([results, metadata]) => {
+    
+  })
+})
+
 
 //POST
 //.post(function(req,res){

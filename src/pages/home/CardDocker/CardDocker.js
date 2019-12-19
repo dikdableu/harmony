@@ -14,6 +14,7 @@ import Fab from '@material-ui/core/Fab';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
+
 import {Link} from 'react-router-dom';
 
 
@@ -61,7 +62,7 @@ export default function CardDocker(props){
           {props.name[0].length > 20 ? props.name[0].replace('/','').slice(0,20) + "..." : props.name[0].replace('/','').slice(0,20)}
         </Button>
         {props.address == "" ? null : <a target="_blank" style={{textDecoration: 'none'}} href={'http://' + props.address}><Button size="small" color="primary">{props.address}</Button></a>}
-        <Fab size="small" variant="extended" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} style={{ marginLeft: "auto" }}>
+        <Fab aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} style={{ marginLeft: "auto", borderRadius:90, width: 40, height:40,}}>
           <MoreVertIcon/>
         </Fab>
         <Menu
@@ -76,5 +77,6 @@ export default function CardDocker(props){
         </Menu>
       </CardActions>
     </Card>
+    
   )
 }

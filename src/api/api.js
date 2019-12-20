@@ -2,12 +2,14 @@ const Sequelize = require('sequelize');
 var Docker = require('dockerode');
 var docker = new Docker({socketPath: '/var/run/docker.sock'});
 var express = require('express');
-var port = 4000;
-
 var app = express();
+const fs = require('fs');
+var cors = require('cors');
+var port = 4000;
+var bodyParser = require('body-parser');
+const formidable = require('express-formidable');
 
-var myRouter = express.Router();
-
+app.use(formidable());
 
 
 // Option 1: Passing parameters separately
@@ -147,56 +149,53 @@ app.use(function (req, res, next) {
   next();
 });
 
-// Je vous rappelle notre route (/piscines).
-myRouter.route('/listcontainers')
-// J'implémente les méthodes GET, PUT, UPDATE et DELETE
-// GET
-.get(function(req,res){
+app.get('/listcontainers', function(req,res){
     var resultat = [];
     var container;
     sequelize.query("Select c.id,c.nom,c.image,c.adresse from users u inner join groupeusers on u.id = groupeusers.idUser inner join groupecontainers on groupecontainers.idGroupe = groupeusers.idGroupe inner join containers c on c.id = groupecontainers.idContainer where login='bastien';").then(([results, metadata]) => {
-      console.log(results)
       res.json(results)
     })
 })
 
-myRouter.route('/all')
-// J'implémente les méthodes GET, PUT, UPDATE et DELETE
-// GET
-.get(function(req,res){
+app.get('/all', function(req,res){
   var container;
   docker.listContainers({"all": true}, function(err, containers) {
-    console.log(containers)
     res.json(containers);
   })
 })
 
-myRouter.route('/addForm')
-// J'implémente les méthodes GET, PUT, UPDATE et DELETE
-// GET
-.get(function(req,res){
-  var data = {}
-  sequelize.query("Select idContainer from users inner join groupeusers on users.id = groupeusers.idUser inner join groupecontainers on groupecontainers.idGroupe = groupeusers.idGroupe where login='bastien';").then(([results, metadata]) => {
-    
-  })
+app.get('/listgroupes', function(req,res){
+    var resultat = [];
+    var container;
+    sequelize.query("Select id, nom from groupes;").then(([results, metadata]) => {
+      res.json(results)
+    })
 })
 
 
-//POST
-//.post(function(req,res){
-//       res.json({message : "Ajoute une nouvelle piscine à la liste", methode : req.method});
-// })
-//PUT
-// .put(function(req,res){
-//       res.json({message : "Mise à jour des informations d'une piscine dans la liste", methode : req.method});
-// })
-//DELETE
-// .delete(function(req,res){
-// res.json({message : "Suppression d'une piscine dans la liste", methode : req.method});
-// });
+app.post('/addForm', function(req,res){
+  
+  console.log(req)
+  
+  var idCard = req.fields.idCard
+  var nomCard = req.fields.nomCard
+  var adresseCard = req.fields.adresseCard
+  var groupeCard = req.fields.groupeCard
+  
+  var imageCardName = req.files.imageCard.name
+  fs.writeFile('../../public/'+imageCardName, new Buffer(req.files, "base64"), (err) => {
+    if (err) throw err;
+    console.log('The file has been saved!');
+  });
 
-// Nous demandons à l'application d'utiliser notre routeur
-app.use(myRouter);
+  sequelize.query("insert into containers values('" +  idCard + "', '" + nomCard + "', './" + imageCardName + "', '" + adresseCard + "', now(), now());").then(([results, metadata]) => {
+    
+  })
+  sequelize.query("insert into groupecontainers values(NULL, '" +  idCard + "', " + groupeCard + ", now(), now());").then(([results, metadata]) => {
+    
+  })
+  res.send('ok')
+})
 
 
 app.listen(port, function(){

@@ -15,9 +15,6 @@ import Fab from '@material-ui/core/Fab';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 
-import {Link} from 'react-router-dom';
-
-
 const useStyles = makeStyles({
   card: {
     maxWidth: 345,
@@ -42,15 +39,18 @@ export default function CardDocker(props){
 
   return(
     <Card className={classes.card} elevation={8}>
+    {console.log(props)}
       <CardActionArea>
-        <CardMedia
-          className={classes.media}
-          image="https://raw.githubusercontent.com/filebrowser/logo/master/banner.png"
-          title={props.name[0].length > 20 ? props.name[0].replace('/','').slice(0,20) + "..." : props.name[0].replace('/','').slice(0,20)}
-        />
+        <div onClick={() => window.location.href = props.adresse}>
+          <CardMedia
+            className={classes.media}
+            image={props.image}
+            title={props.nom.length > 10 ? props.nom.replace('/','').slice(0,10) + "..." : props.nom.replace('/','').slice(0,10)}
+          />
+        </div>
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
-            {props.name[0].length > 20 ? props.name[0].replace('/','').slice(0,20) + "..." : props.name[0].replace('/','').slice(0,20)}
+            {props.nom.length > 10 ? props.nom.replace('/','').slice(0,10) + "..." : props.nom.replace('/','').slice(0,10)}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
             Est un outils qui permet d'administrer ses fichiers dans le cloud
@@ -59,9 +59,9 @@ export default function CardDocker(props){
       </CardActionArea>
       <CardActions>
         <Button size="small" color="primary">
-          {props.name[0].length > 20 ? props.name[0].replace('/','').slice(0,20) + "..." : props.name[0].replace('/','').slice(0,20)}
+          {props.nom.length > 10 ? props.nom.replace('/','').slice(0,10) + "..." : props.nom.replace('/','').slice(0,10)}
         </Button>
-        {props.address == "" ? null : <a target="_blank" style={{textDecoration: 'none'}} href={'http://' + props.address}><Button size="small" color="primary">{props.address}</Button></a>}
+        {props.adresse === "" ? null : <a rel="noopener"  style={{textDecoration: 'none'}} href={props.adresse.includes('http') || props.adresse.includes('https') ? props.adresse : 'http://' + props.adresse.includes('http')}><Button size="small" color="primary">{props.adresse}</Button></a>}
         <Fab aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} style={{ marginLeft: "auto", borderRadius:90, width: 40, height:40,}}>
           <MoreVertIcon/>
         </Fab>
@@ -71,7 +71,7 @@ export default function CardDocker(props){
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleClose}>Ouvrir</MenuItem>
+          <MenuItem onClick={() => window.location.href = props.adresse}>Ouvrir</MenuItem>
           <MenuItem onClick={handleClose}>Modifier</MenuItem>
           <MenuItem onClick={handleClose}>Supprimer</MenuItem>
         </Menu>

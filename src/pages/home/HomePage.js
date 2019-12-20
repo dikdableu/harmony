@@ -9,6 +9,7 @@ import Fab from '@material-ui/core/Fab';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
 
 import AddIcon from '@material-ui/icons/Add';
 
@@ -32,10 +33,15 @@ export default function HomePage () {
   
   const [result, setResult] = useState(null)
   const [open, setOpen] = React.useState(false);
-  const [openAutoComplete, setOpenAutoComplete] = React.useState(false);
+  const [openAutoCompleteContainer, setOpenAutoCompleteContainer] = React.useState(false);
+  const [openAutoCompleteGroupe, setOpenAutoCompleteGroupe] = React.useState(false);
   const [options, setOptions] = React.useState([]);
-  const loading = open && options.length === 0;
+  const [optionsGroupe, setOptionsGroupe] = React.useState([]);
+  const loading = openAutoCompleteContainer && options.length === 0;
+  const loadingGroupe = openAutoCompleteGroupe && optionsGroupe.length === 0;
   const [inputForm, setInputForm] = React.useState(null)
+  const [inputGroupe, setInputGroupe] = React.useState(null)
+  const [selectedFile, setSelectedFile] = React.useState(null)
 
   const handleOpen = () => {
     setOpen(true);
@@ -45,9 +51,36 @@ export default function HomePage () {
     setOpen(false);
   };
   
+  const onChangeHandler=event=>{
+    setSelectedFile(event.target.files[0])
+}
+  
+  const submitFrom = () => {
+    
+    var data = new FormData()
+    
+    var idCard =  document.getElementById("idCard").value;
+    var nomCard = document.getElementById("nomCard").value;
+    var adresseCard = document.getElementById("adresseCard").value;
+    var imageCard = selectedFile;
+    var groupeCard = document.getElementById("groupeCard").value;
+    
+    data.append( "idCard", idCard)
+    data.append( "nomCard", nomCard)
+    data.append( "adresseCard", adresseCard)
+    data.append( "imageCard", imageCard)
+    data.append( "groupeCard", groupeCard)
+    
+    console.log(imageCard)
+     fetch('http://api.harmony.choisy.io/addForm', {
+      method: "POST",
+      body: data,
+    });
+  };
+  
   useEffect(() => {
     if(result == null){
-      fetch('http://api.harmony.choisy.io/all')
+      fetch('http://api.harmony.choisy.io/listcontainers')//a changer par listcontainers
       .then(response => response.json())
       .then(data => setResult(data));
     }
@@ -61,15 +94,15 @@ export default function HomePage () {
     }
 
     (async () => {
-      const response = await fetch('http://api.harmony.choisy.io/listcontainers');
+      const response = await fetch('http://api.harmony.choisy.io/all');
       const containers = await response.json();
       
       if (active) {
         var list = []
-        containers.forEach(function(item){
+        containers.map((item) => {
           list.push(item)
-          console.log(list)
         })
+        console.log(containers)
         setOptions(list);
       }
     })();
@@ -80,10 +113,43 @@ export default function HomePage () {
   }, [loading]);
   
   useEffect(() => {
-    if (!openAutoComplete) {
+    let active = true;
+
+    if (!loadingGroupe) {
+      return undefined;
+    }
+
+    (async () => {
+      const response = await fetch('http://api.harmony.choisy.io/listgroupes');
+      const groupes = await response.json();
+      
+      if (active) {
+        var listGroupe = []
+        groupes.map((item) => {
+          
+          listGroupe.push(item)
+          console.log(item)
+        })
+        setOptionsGroupe(listGroupe);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [loadingGroupe]);
+  
+  useEffect(() => {
+    if (!openAutoCompleteContainer) {
       setOptions([]);
     }
-  }, [openAutoComplete]);
+  }, [openAutoCompleteContainer]);
+  
+  useEffect(() => {
+    if (!openAutoCompleteGroupe) {
+      setOptionsGroupe([]);
+    }
+  }, [openAutoCompleteGroupe]);
   
   if(result == null){
     return (<Grid justify="center" container ><Loader
@@ -103,11 +169,11 @@ export default function HomePage () {
   }else{
     return (
       <div>
+      {console.log(result)}
         <Grid container spacing={4}>
             {result.map((item) => {
-                for (let [key, value] of Object.entries(item.NetworkSettings.Networks)) {
-                  return(<Grid item xs={12} sm={6} md={4} lg={'auto'}><CardDocker key={item.Id} name={item.Names} address={value.IPAddress} /></Grid>)
-                }
+                console.log(item.adresse)
+                return(<Grid item xs={12} sm={6} md={4} lg={'auto'}><CardDocker key={item.id} nom={item.nom} adresse={item.adresse} image={item.image}/></Grid>)
               })
             }
           <Grid 
@@ -135,24 +201,24 @@ export default function HomePage () {
                   <Autocomplete
                     id="asynchronous-demo"
                     style={{flex:1}}
-                    open={openAutoComplete}
+                    open={openAutoCompleteContainer}
                     onOpen={() => {
-                      setOpenAutoComplete(true);
+                      setOpenAutoCompleteContainer(true);
                     }}
                     onClose={() => {
-                      setOpenAutoComplete(false);
+                      setOpenAutoCompleteContainer(false);
                     }}
                     getOptionSelected={(option, value) => option === value}
                     getOptionLabel={option => {
                       setInputForm(option)
-                      return(option.nom)
+                      return(option.Names)
                     }}
                     options={options}
                     loading={loading}
                     renderInput={params => (
                       <TextField
                         {...params}
-                        label="Asynchronous"
+                        label="Liste des containers"
                         fullWidth
                         variant="outlined"
                         InputProps={{
@@ -168,20 +234,33 @@ export default function HomePage () {
                     )}
                   />
                 </div>
-                <div style={{paddingTop: 10}}>
+                <div style={{display: 'none'}}>
                   <TextField
-                    label="Nom"
+                    label="Id"
+                    id="idCard"
                     variant="outlined"
-                    size="small"
-                    value={inputForm != null ? inputForm.nom :  ""}
+                    fullWidth
+                    required
+                    value={inputForm != null ? inputForm.Id :  ""}
                   />
                 </div>
                 <div style={{paddingTop: 10}}>
                   <TextField
+                    id="nomCard"
+                    label="Nom"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={inputForm != null ? inputForm.Names :  ""}
+                  />
+                </div>
+                <div style={{paddingTop: 10}}>
+                  <TextField
+                    id="adresseCard"
                     label="Adresse:port ou domaine"
                     variant="outlined"
-                    size="small"
-                    value={inputForm != null ? "http://" + inputForm.adresse :  ""}
+                    fullWidth
+                    required
                     />
                 </div>
                 <div  style={{paddingTop: 10}}>
@@ -190,7 +269,58 @@ export default function HomePage () {
                     label="Image"
                     type="file"
                     size="small"
+                    onChange={onChangeHandler}
                   />
+                </div>
+                <div style={{paddingTop: 10}}>
+                  <Autocomplete
+                    id="asynchronous-groupe"
+                    style={{flex:1}}
+                    open={openAutoCompleteGroupe}
+                    onOpen={() => {
+                      setOpenAutoCompleteGroupe(true);
+                    }}
+                    onClose={() => {
+                      setOpenAutoCompleteGroupe(false);
+                    }}
+                    getOptionSelected={(optionsGroupe, value) => optionsGroupe === value}
+                    getOptionLabel={optionsGroupe => {
+                      setInputGroupe(optionsGroupe)
+                      return(optionsGroupe.nom)
+                    }}
+                    options={optionsGroupe}
+                    loading={loadingGroupe}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="Liste des groupes"
+                        fullWidth
+                        variant="outlined"
+                        InputProps={{
+                          ...params.InputProps,
+                          endAdornment: (
+                            <React.Fragment>
+                              {loadingGroupe ? <CircularProgress color="inherit" size={20} /> : null}
+                              {params.InputProps.endAdornment}
+                            </React.Fragment>
+                          ),
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+                <div style={{display: 'none'}}>
+                  <TextField
+                    label="groupeCard"
+                    id="groupeCard"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={inputGroupe != null ? inputGroupe.id :  ""}
+                  />
+                </div>
+                <div  style={{paddingTop: 10}}>
+                  <Button variant="contained" onClick={() => submitFrom()}>Soumettre</Button>
                 </div>
               </div>
             </Modal>

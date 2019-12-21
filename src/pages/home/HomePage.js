@@ -94,7 +94,7 @@ export default function HomePage () {
     }
 
     (async () => {
-      const response = await fetch('http://api.harmony.choisy.io/all');
+      const response = await fetch('http://api.harmony.choisy.io/allcontainers');
       const containers = await response.json();
       
       if (active) {

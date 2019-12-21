@@ -24,6 +24,7 @@ import ImageIcon from '@material-ui/icons/Image';
 import CloudIcon from '@material-ui/icons/Cloud';
 
 import HomePage from './pages/home/HomePage';
+import ImagesPage from './pages/images/ImagesPage';
 
 function App(){
 
@@ -166,6 +167,7 @@ function App(){
           <div className={classes.toolbar} />
             <Switch>
               <Route exact path="/" component={HomePage} />
+              <Route exact path="/images" component={ImagesPage} />
             </Switch>
         </main>
       </div>

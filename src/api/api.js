@@ -157,12 +157,20 @@ app.get('/listcontainers', function(req,res){
     })
 })
 
-app.get('/all', function(req,res){
+app.get('/allcontainers', function(req,res){
   var container;
   docker.listContainers({"all": true}, function(err, containers) {
     res.json(containers);
   })
 })
+
+app.get('/allimages', function(req,res){
+  var container;
+  docker.listImages({"all": true}, function(err, images) {
+    res.json(images);
+  })
+})
+
 
 app.get('/listgroupes', function(req,res){
     var resultat = [];

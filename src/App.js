@@ -25,6 +25,7 @@ import CloudIcon from '@material-ui/icons/Cloud';
 
 import HomePage from './pages/home/HomePage';
 import ImagesPage from './pages/images/ImagesPage';
+import ContainersPage from './pages/containers/ContainersPage';
 
 function App(){
 
@@ -168,6 +169,7 @@ function App(){
             <Switch>
               <Route exact path="/" component={HomePage} />
               <Route exact path="/images" component={ImagesPage} />
+              <Route exact path="/containers" component={ContainersPage} />
             </Switch>
         </main>
       </div>

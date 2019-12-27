@@ -11,6 +11,12 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+
 import AddIcon from '@material-ui/icons/Add';
 
 
@@ -173,25 +179,21 @@ export default function HomePage () {
         <Grid container spacing={4}>
             {result.map((item) => {
                 console.log(item.adresse)
-                return(<Grid item xs={12} sm={6} md={4} lg={'auto'}><CardDocker key={item.id} nom={item.nom} adresse={item.adresse} image={item.image}/></Grid>)
+                return(<Grid item xs={12} sm={6} md={4} lg={3}><CardDocker key={item.id} nom={item.nom} adresse={item.adresse} image={item.image}/></Grid>)
               })
             }
-          <Grid 
-          item 
-          xs={12} 
-          sm={6} 
-          md={4} 
-          lg={3} 
-          container
-          direction="column"
-          alignItems="center" 
-          justify="center"
           
-          >
-            <Fab onClick={handleOpen} style={{borderRadius:90, width: 160, height:160, borderWidth: 0, boxShadow: 3 }} elevation={8}>
-              <AddIcon style={{ fontSize: 40,  color: '#777777' }} />
-            </Fab>
-            <Modal
+            <Grid item xs={12} sm={6} md={4} lg={3} >
+              <Card elevation={8} onClick={handleOpen} style={{maxWidth: 300, height: 319.391}}>
+                <CardActionArea style={{height: 251.391, justifyContent: "center", textAlign: "center"}}>
+                  <CardContent >
+                    <AddIcon style={{ fontSize: 40,  color: '#777777' }} />
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+        </Grid>
+        <Modal
               open={open}
               onClose={handleClose}
               style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}
@@ -324,8 +326,6 @@ export default function HomePage () {
                 </div>
               </div>
             </Modal>
-          </Grid>
-        </Grid>
       </div>
     )
   }

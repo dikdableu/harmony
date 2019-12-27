@@ -151,30 +151,37 @@ app.use(function (req, res, next) {
 
 app.get('/listcontainers', function(req,res){
     var resultat = [];
-    var container;
     sequelize.query("Select c.id,c.nom,c.image,c.adresse from users u inner join groupeusers on u.id = groupeusers.idUser inner join groupecontainers on groupecontainers.idGroupe = groupeusers.idGroupe inner join containers c on c.id = groupecontainers.idContainer where login='bastien';").then(([results, metadata]) => {
       res.json(results)
     })
 })
 
 app.get('/allcontainers', function(req,res){
-  var container;
   docker.listContainers({"all": true}, function(err, containers) {
     res.json(containers);
   })
 })
 
 app.get('/allimages', function(req,res){
-  var container;
   docker.listImages({"all": true}, function(err, images) {
     res.json(images);
   })
 })
 
+app.get('/allvolumes', function(req,res){
+  docker.listVolumes({"all": true}, function(err, volumes) {
+    res.json(volumes);
+  })
+})
+
+app.get('/allnetworks', function(req,res){
+  docker.listNetworks({"all": true}, function(err, networks) {
+    res.json(networks);
+  })
+})
 
 app.get('/listgroupes', function(req,res){
     var resultat = [];
-    var container;
     sequelize.query("Select id, nom from groupes;").then(([results, metadata]) => {
       res.json(results)
     })

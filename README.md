@@ -1,3 +1,10 @@
+# SocketServerApi
+
+[![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)
+
+Ce projet sert d'interface d'administration pour accéder aux différent container docker de son serveur.
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -45,5 +52,13 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 ![alt text](https://imagegit.s3.eu-central-1.amazonaws.com/Capture+d%E2%80%99%C3%A9cran+2020-01-28+%C3%A0+00.05.39.png)
 ![alt text](https://imagegit.s3.eu-central-1.amazonaws.com/Capture+d%E2%80%99%C3%A9cran+2020-01-28+%C3%A0+00.05.44.png)
 ![alt text](https://imagegit.s3.eu-central-1.amazonaws.com/Capture+d%E2%80%99%C3%A9cran+2020-01-28+%C3%A0+00.05.49.png)
+
+## Auteurs
+
+* **Bastien Choisy** _alias_ [@dikdableu](https://github.com/dikdableu)
+
+## License
+
+Ce projet est sous licence ``CC BY-NC-ND 4.0``
 
 
